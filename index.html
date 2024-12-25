@@ -178,14 +178,14 @@
           // Calculate sums
           const sumInnbetalinger = kontant + bankkort + bankinn;
           const omsetningEtterTeknikker = omsetning - teknikerhonorar;
-          const klinikkandel = omsetningEtterTeknikker * 0.6;    // Klinikkandel (60%)
-          const tannlegeandel = omsetningEtterTeknikker * 0.4;   // Tannlegeandel (40%)
-          const differanseInnbetalinger = sumInnbetalinger - omsetning;
+          const klinikkandel = omsetningEtterTeknikker * 0.6;    // Klinikkandel (60%) av omsetning
+          const tannlegeandel = sumInnbetalinger - klinikkandel; // Din andel basert på faktiske innbetalinger
+          const differanseInnbetalinger = sumInnbetalinger - omsetning; // Kan være positiv ved innbetaling av gamle fakturaer
 
           // Update text results
           calculationText.innerHTML = `
-            <p>Sum faktiske innbetalinger: ${formatNOK(sumInnbetalinger)}</p>
-            <p>Total omsetning: ${formatNOK(omsetning)}</p>
+            <p>Sum faktiske innbetalinger denne perioden: ${formatNOK(sumInnbetalinger)}</p>
+            <p>Total omsetning denne perioden: ${formatNOK(omsetning)}</p>
             <p>Fratrekk tannteknikker: ${formatNOK(teknikerhonorar)}</p>
             <div class="sum-line">
               <span class="grunnlag-text">
@@ -193,10 +193,10 @@
               </span>
             </div>
             <p class="final-result">
-              Beløp som skal betales til klinikk (60%): ${formatNOK(klinikkandel)}
+              Beløp som skal betales til klinikk (60% av omsetning): ${formatNOK(klinikkandel)}
             </p>
-            <p>Din andel (40%): ${formatNOK(tannlegeandel)}</p>
-            <p>Differanse mellom innbetalinger og omsetning: ${formatNOK(differanseInnbetalinger)}</p>
+            <p>Din andel (etter betaling til klinikk): ${formatNOK(tannlegeandel)}</p>
+            <p>Differanse mellom innbetalinger og omsetning: ${formatNOK(differanseInnbetalinger)} ${differanseInnbetalinger > 0 ? '(innbetaling av tidligere fakturaer)' : '(utestående fakturaer)'}</p>
           `;
 
           // Destroy old chart before creating a new one
